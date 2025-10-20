@@ -44,7 +44,7 @@ pub unsafe fn system_table_mut() -> &'static mut uefi::system::SystemTable {
 }
 
 unsafe extern "C" {
-    fn main() -> Status;
+    fn amain() -> Status;
 }
 
 #[unsafe(no_mangle)]
@@ -54,7 +54,7 @@ extern "efiapi" fn efi_main(
 ) -> Status {
     unsafe {
         SYSTEM_TABLE = &mut *system_table;
-        match main() {
+        match amain() {
             Status::SUCCESS => loop {},
             _s => {
                 panic!("main failed returning status {}", _s)
