@@ -4,8 +4,12 @@ use aos_uefi::{self as uefi, Handle, status::Status};
 pub struct System;
 
 impl System {
-    pub const fn bootsrv() -> &'static uefi::boot::BootServices {
+    pub fn bootsrv() -> &'static uefi::boot::BootServices {
         unsafe { system_table().boot_srv }
+    }
+
+    pub fn image_handle() -> &'static Handle {
+        unsafe { image_handle() }
     }
 
     pub fn get_protocol(id: &uefi::guid::Guid) -> Result<usize, Status> {
@@ -32,15 +36,19 @@ impl System {
     }
 }
 
-static mut SYSTEM_TABLE: *mut aos_uefi::system::SystemTable =
-    0 as *mut aos_uefi::system::SystemTable;
+static mut SYSTEM_TABLE: *mut uefi::system::SystemTable = 0 as *mut uefi::system::SystemTable;
+static mut IMAGE_HANDLE: *mut uefi::Handle = 0 as *mut uefi::Handle;
 
-pub const unsafe fn system_table() -> &'static uefi::system::SystemTable {
+pub unsafe fn system_table() -> &'static uefi::system::SystemTable {
     unsafe { &*SYSTEM_TABLE }
 }
 
 pub unsafe fn system_table_mut() -> &'static mut uefi::system::SystemTable {
     unsafe { &mut *SYSTEM_TABLE }
+}
+
+pub unsafe fn image_handle() -> &'static Handle {
+    unsafe { &*IMAGE_HANDLE }
 }
 
 unsafe extern "C" {
@@ -49,11 +57,12 @@ unsafe extern "C" {
 
 #[unsafe(no_mangle)]
 extern "efiapi" fn efi_main(
-    _image_handle: Handle,
+    image_handle: Handle,
     system_table: &'static mut uefi::system::SystemTable,
 ) -> Status {
     unsafe {
         SYSTEM_TABLE = &mut *system_table;
+        *IMAGE_HANDLE = image_handle;
         match amain() {
             Status::SUCCESS => loop {},
             _s => {
