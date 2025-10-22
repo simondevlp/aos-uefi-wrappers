@@ -1,7 +1,7 @@
 #![no_std]
 #![feature(alloc_error_handler)]
 
-extern crate aos_uefi as uefi;
+extern crate aos_uefi;
 
 pub mod alloc;
 pub mod fs;
@@ -9,4 +9,4 @@ pub mod fs;
 pub mod stdio;
 pub mod system;
 
-pub use uefi::*;
+pub use aos_uefi::{Handle, guid::Guid, status::Status};

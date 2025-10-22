@@ -1,8 +1,9 @@
 use core::fmt::{Arguments, Write};
 
-use aos_uefi::status::Status;
-
-use crate::system::{self, system_table};
+use crate::{
+    Status,
+    system::{self, system_table},
+};
 
 pub struct Stdout;
 
