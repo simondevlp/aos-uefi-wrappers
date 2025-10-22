@@ -55,8 +55,6 @@ impl From<FileInfo> for FileInfoObject {
 
 impl Display for FileInfoObject {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        writeln!(f, "Size {}", self.0.size)?;
-        writeln!(f, "Attribute 0x{:x}", self.0.attr.0)?;
         for b in self.0.file_name {
             if b == 0 {
                 return Ok(());
