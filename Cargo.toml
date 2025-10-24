@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-aos-uefi = { version = "0.1.0", path = "../aos-uefi" }
+aos-uefi = { git = "https://github.com/simondevlp/aos-uefi.git", branch = "master" }
